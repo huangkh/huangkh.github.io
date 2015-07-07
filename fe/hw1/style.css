@@ -1,7 +1,7 @@
 
 #info1
 {
-	background:aqua;
+	background:pink;
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
@@ -12,7 +12,7 @@
 
 #info2
 {
-	background:aqua;
+	background:pink;
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
@@ -23,12 +23,34 @@
 
 #hw
 {
-	background:aqua;
+	background:pink;
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
 	margin-top:200px;
 	margin-left:250px;
 	margin-right:250px;
+}
 
+#article_index
+{
+	float:left;
+	background:pink;
+	color:black;
+	font-family:Microsoft YaHei;
+	font-size:25px;
+	width:250px;
+	height:300px;
+	margin-left:250px;
+	margin-top:200px;
+}
+
+#article_content
+{
+	color:black;
+	font-family:Microsoft YaHei;
+	font-size:25px;
+	width:600px;
+	margin-top:200px;
+	margin-left:550px;
 }
