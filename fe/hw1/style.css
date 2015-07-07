@@ -18,7 +18,7 @@ text-decoration:none;
 
 #info1
 {
-	background:pink;
+	background:rgba(255,255,255,0.5);
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
@@ -29,7 +29,7 @@ text-decoration:none;
 
 #info2
 {
-	background:pink;
+	background:rgba(255,255,255,0.5);
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
@@ -40,7 +40,7 @@ text-decoration:none;
 
 #hw
 {
-	background:pink;
+	background:rgba(255,255,255,0.5);
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
@@ -52,7 +52,7 @@ text-decoration:none;
 #article_index
 {
 	float:left;
-	background:pink;
+	background:rgba(255,255,255,0.5);
 	color:black;
 	font-family:Microsoft YaHei;
 	font-size:25px;
@@ -63,6 +63,16 @@ text-decoration:none;
 }
 
 #article_content
+{
+	background:rgba(255,255,255,0.5);
+	color:black;
+	font-family:Microsoft YaHei;
+	font-size:25px;
+	width:600px;
+	margin-top:200px;
+	margin-left:550px;
+}
+#article_content0
 {
 	color:black;
 	font-family:Microsoft YaHei;
