@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
+		
+		<script type="text/javascript">
+			/*
+			function showLargeImg(obj)
+			{
+				var width = obj.width;
+				var height = obj.height;
+				var w = document.documentElement.clientWidth;
+				
+				
+				//窗体
+				var win = document.createElement("div");
+				win.id = "win";
+				win.style.cssText = "position:absolute;left:"+(w/2 - width/2)+"px;top:200px;width:" + width + "px;height:" + height + "px;border:solid 2px #afccfe;";
+				document.body.appendChild(win);
+				
+				//图片
+				var imgD = document.createElement("div");
+				imgD.style.cssText = "width:" + width + "px;height:" + (height - 50) + "px;"
+				
+				var img = document.createElement("img");
+				img.src = "img/i (" + obj.alt +").jpg";
+				
+				
+				//内容
+				var winCon = document.createElement("div");
+				winCon.style.cssText = "backgroud:pink;text-align:center;width:" + width + "px;height:" + (height - 50) + "px;overflow:auto;"; 
+				winCon.innerHTML = obj.content; 
+				win.appendChild(winCon);
+				
+				//按钮
+				var butCon = document.createElement("div");
+				butCon.style.cssText = "width:"+width+"px;height:25px;text-height:20px;text-align:center;padding-top:3px;";
+				win.appendChild(butCon); 
+				
+				var but = document.createElement("button");
+				but.innerHTML = 'close'; 
+				butCon.appendChild(but); 
+				
+				//底部按钮的关闭事件 
+				but.onclick = function() 
+				{ 
+					document.body.removeChild(win); 
+				}
+			}*/
+			
+			var altOfImgOnline = 15;
+			function clickImg(ss)
+			{
+				alert(ss);
+			}
+			
+			//滚动条到最下方，加载更多图片
+			window.onscroll = function() 
+			{ 
+				if (document.body.scrollTop + document.body.clientHeight === document.body.scrollHeight) 
+				{
+					for(var i = 0; i < 6; i++)
+					{
+						altOfImgOnline++;
+						$("#thumbs").append("<div class='imgbox' id='d" + altOfImgOnline + "'><img onclick='clickImg(this.alt);' src='img/i (" + altOfImgOnline + ").jpg' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' alt='"+altOfImgOnline+"' /></div>");
+						
+					}
+				} 
+			} 
+			
+			$("img").error(function(){	$(this).attr("src", "img/i(0).jpg");});
+		</script>
+		<style type="text/css"> 
+			
+			#thumbs
+			{
+				position: relative; 
+				width: 980px; 
+				padding: 10px; 
+				margin-left: auto;
+				margin-right: auto;
+			}
+			
+			.imgbox 
+			{
+				position: float;
+				float: left;
+				padding: 20px;
+				background-color: black;
+			}
+		</style> 
+	</head>
+	
+	<body>
+		<div id="content">
+			<!-- 包含所有图片的容器 -->
+			<div id="thumbs">
+				<!-- 各个图片的容器 -->
+				<div class="imgbox" id="d1"><img onclick="clickImg(this.alt);" src="img/i (1).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="1" /></div>
+				<div class="imgbox" id="d2"><img onclick="clickImg(this.alt);" src="img/i (2).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="2" /></div>
+				<div class="imgbox" id="d3"><img onclick="clickImg(this.alt);" src="img/i (3).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="3" /></div>
+				<div class="imgbox" id="d4"><img onclick="clickImg(this.alt);" src="img/i (4).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="4" /></div>
+				<div class="imgbox" id="d5"><img onclick="clickImg(this.alt);" src="img/i (5).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="5" /></div>	
+				<div class="imgbox" id="d6"><img onclick="clickImg(this.alt);" src="img/i (6).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="6" /></div>	
+				<div class="imgbox" id="d7"><img onclick="clickImg(this.alt);" src="img/i (7).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="7" /></div>	
+				<div class="imgbox" id="d8"><img onclick="clickImg(this.alt);" src="img/i (8).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="8" /></div>	
+				<div class="imgbox" id="d9"><img onclick="clickImg(this.alt);" src="img/i (9).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="9" /></div>	
+				<div class="imgbox" id="d10"><img onclick="clickImg(this.alt);" src="img/i (10).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="10" /></div>	
+				<div class="imgbox" id="d11"><img onclick="clickImg(this.alt);" src="img/i (11).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="11" /></div>	
+				<div class="imgbox" id="d12"><img onclick="clickImg(this.alt);" src="img/i (12).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="12" /></div>	
+				<div class="imgbox" id="d13"><img onclick="clickImg(this.alt);" src="img/i (13).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="13" /></div>	
+				<div class="imgbox" id="d14"><img onclick="clickImg(this.alt);" src="img/i (14).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="14" /></div>
+				<div class="imgbox" id="d15"><img onclick="clickImg(this.alt);" src="img/i (15).jpg" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="15" /></div>
+			</div>
+		</div>
+	</body>
+</html>
