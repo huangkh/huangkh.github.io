@@ -1,83 +1,193 @@
 <html>
 	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
 		
 		<script type="text/javascript">
-			/*
-			function showLargeImg(obj)
+			
+			
+			
+			var img_number = 0;
+			var getmore = true;
+			
+			var com_x, com_y;//电脑的精度和纬度
+			var com;
+			navigator.geolocation.getCurrentPosition(showPosition);
+			function showPosition(pos)
 			{
-				var width = obj.width;
-				var height = obj.height;
-				var w = document.documentElement.clientWidth;
+				com = pos;
+				com_x = pos.coords.latitude;
+				com_y = pos.doords.longitude;
+			}
+			alert(com_x + "+" + com_y);
+			//初始加载图片
+			function load()
+			{
+				$.getJSON("json/img_0.json",function(result)
+				{
+					$.each(result, function(i, item)
+					{
+						$("#thumbs").append("<div class='imgbox' id='" + item.url + "'><img onclick='clickImg(this.src);' src='" + item.url + "' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' /></div>");
+					});
+				});
 				
+				/*for(var i = 0; i < 15; i++)
+				{
+					altOfImgOnline++;
+					$("#thumbs").append("<div class='imgbox' id='d" + altOfImgOnline + "'><img onclick='clickImg(this.src);' src='img/i (" + altOfImgOnline + ").jpg' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' /></div>");
+				}*/	
+			}
+			//点击图片
+			function clickImg(url)
+			{
+				if(url.split('(')[1].split(')')[0] === "0")
+					return;
+					
+				getmore = false;//不会加载新图片
+				var width = 1000;
+				var height = document.body.clientHeight;
+				var w = document.documentElement.clientWidth;
+
+				var comments = new Array();//评论
+				var comments_index = 0;
 				
 				//窗体
 				var win = document.createElement("div");
 				win.id = "win";
-				win.style.cssText = "position:absolute;left:"+(w/2 - width/2)+"px;top:200px;width:" + width + "px;height:" + height + "px;border:solid 2px #afccfe;";
+				win.style.cssText = "position:fixed;left:"+(w/2 - width/2)+"px;top:0px;width:" + width + "px;height:" + height + "px;border:solid 2px #afccfe;";
 				document.body.appendChild(win);
 				
 				//图片
 				var imgD = document.createElement("div");
-				imgD.style.cssText = "width:" + width + "px;height:" + (height - 50) + "px;"
+				imgD.style.cssText = "height:" + height*3/4 + "px; background-color:black; text-align:center;";
+				imgD.id = "imgD";
+				win.appendChild(imgD);
+			
+				$("#imgD").append("<img src='" + url + "' onerror='this.src=\"img/i (0).jpg\"' height='"+ height*3/4 +"'  alt='"+url+"'/>");
 				
-				var img = document.createElement("img");
-				img.src = "img/i (" + obj.alt +").jpg";
-				
-				
+								
 				//内容
+				$.getJSON("json/comment.json",function(result)
+				{
+					$.each(result, function(i, item)
+					{
+						var obj = new Object();
+						obj.name = item.name;
+						obj.comment = item.comment;
+						comments.push(obj);
+					});
+				});				
+				
 				var winCon = document.createElement("div");
-				winCon.style.cssText = "backgroud:pink;text-align:center;width:" + width + "px;height:" + (height - 50) + "px;overflow:auto;"; 
-				winCon.innerHTML = obj.content; 
+				winCon.style.cssText = "background-color:black;color:white;text-align:center;width:" + width + "px;height:" + (height*1/4 - 25) + "px;overflow:auto;"; 
 				win.appendChild(winCon);
 				
 				//按钮
 				var butCon = document.createElement("div");
-				butCon.style.cssText = "width:"+width+"px;height:25px;text-height:20px;text-align:center;padding-top:3px;";
+				butCon.style.cssText = "background-color:black;width:"+width+"px;height:25px;text-height:20px;text-align:center;padding-top:3px;";
 				win.appendChild(butCon); 
 				
+				var conbut = document.createElement("button");
+				conbut.innerHTML = '查看评论'; 
+				butCon.appendChild(conbut); 
+				
+				var prebut = document.createElement("button");
+				prebut.innerHTML = '上一页'; 
+				butCon.appendChild(prebut); 
+				
+				var nextbut = document.createElement("button");
+				nextbut.innerHTML = '下一页'; 
+				butCon.appendChild(nextbut); 
+				
 				var but = document.createElement("button");
-				but.innerHTML = 'close'; 
+				but.innerHTML = '关闭'; 
 				butCon.appendChild(but); 
+				
+				//查看评论的点击事件
+				conbut.onclick = function()
+				{
+					var temp_str = "";
+					for(var i = comments_index; i < comments_index+3 && i < comments.length; i++)
+					{
+						temp_str += "<p>("+(i+1)+"L)"+ comments[i].name +" : " + comments[i].comment + "</p>";
+					}
+					temp_str += "-----"+ ((comments_index-(comments_index%3))/3+1) +"/"+ ((comments.length-1-((comments.length-1)%3))/3+1) +"-----";
+					winCon.innerHTML = temp_str;
+				}
+				
+				//上一页的点击事件
+				prebut.onclick = function()
+				{
+					if(comments_index >= 3)
+						comments_index -= 3;
+					var temp_str = "";
+					for(var i = comments_index; i < comments_index+3 && i < comments.length; i++)
+					{
+						temp_str += "<p>("+(i+1)+"L)"+ comments[i].name +" : " + comments[i].comment + "</p>";
+					}
+					temp_str += "-----"+ ((comments_index-(comments_index%3))/3+1) +"/"+ ((comments.length-1-((comments.length-1)%3))/3+1) +"-----";
+					winCon.innerHTML = temp_str;
+				}
+				
+				//下一页的点击事件
+				nextbut.onclick = function()
+				{
+					if(comments_index + 3 < comments.length)
+						comments_index += 3;
+					var temp_str = "";
+					for(var i = comments_index; i < comments_index+3 && i < comments.length; i++)
+					{
+						temp_str += "<p>("+(i+1)+"L)"+ comments[i].name +" : " + comments[i].comment + "</p>";
+					}
+					temp_str += "-----"+ ((comments_index-(comments_index%3))/3+1) +"/"+ ((comments.length-1-((comments.length-1)%3))/3+1) +"-----";
+					winCon.innerHTML = temp_str;
+				}
 				
 				//底部按钮的关闭事件 
 				but.onclick = function() 
 				{ 
-					document.body.removeChild(win); 
+					document.body.removeChild(win);
+					getmore = true;
 				}
-			}*/
-			
-			var altOfImgOnline = 15;
-			function clickImg(ss)
-			{
-				alert(ss);
 			}
 			
 			//滚动条到最下方，加载更多图片
 			window.onscroll = function() 
 			{ 
+				if(getmore === false)
+					return;
 				if (document.body.scrollTop + document.body.clientHeight === document.body.scrollHeight) 
 				{
-					for(var i = 0; i < 6; i++)
+					img_number++;
+					$.getJSON("json/img_"+ img_number +".json",function(result)
 					{
-						altOfImgOnline++;
-						$("#thumbs").append("<div class='imgbox' id='d" + altOfImgOnline + "'><img onclick='clickImg(this.alt);' src='img/i (" + altOfImgOnline + ").JPG' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' alt='"+altOfImgOnline+"' /></div>");
+						$.each(result, function(i, item)
+						{
+							$("#thumbs").append("<div class='imgbox' id='" + item.url + "'><img onclick='clickImg(this.src);' src='" + item.url + "' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' /></div>");
+						});
+					});
+				
+					/*for(var i = 0; i < 6; i++)
+					{
 						
-					}
+					
+						altOfImgOnline++;
+						$("#thumbs").append("<div class='imgbox' id='d" + altOfImgOnline + "'><img onclick='clickImg(this.src);' src='img/i (" + altOfImgOnline + ").jpg' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' /></div>");
+						
+					}*/
 				} 
 			} 
 			
-			$("img").error(function(){	$(this).attr("src", "img/i(0).jpg");});
 		</script>
 		<style type="text/css"> 
+			
 			
 			#thumbs
 			{
 				position: relative; 
 				width: 980px; 
 				padding: 10px; 
-				margin-left: auto;
-				margin-right: auto;
+				left: 180px;
 			}
 			
 			.imgbox 
@@ -87,30 +197,17 @@
 				padding: 20px;
 				background-color: black;
 			}
+			.imgbox:hover
+			{
+				background-color: #119966;
+			}
+			
 		</style> 
+		<title>为了秀恩爱</title>
 	</head>
 	
-	<body>
-		<div id="content">
-			<!-- 包含所有图片的容器 -->
-			<div id="thumbs">
-				<!-- 各个图片的容器 -->
-				<div class="imgbox" id="d1"><img onclick="clickImg(this.alt);" src="img/i (1).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="1" /></div>
-				<div class="imgbox" id="d2"><img onclick="clickImg(this.alt);" src="img/i (2).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="2" /></div>
-				<div class="imgbox" id="d3"><img onclick="clickImg(this.alt);" src="img/i (3).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="3" /></div>
-				<div class="imgbox" id="d4"><img onclick="clickImg(this.alt);" src="img/i (4).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="4" /></div>
-				<div class="imgbox" id="d5"><img onclick="clickImg(this.alt);" src="img/i (5).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="5" /></div>	
-				<div class="imgbox" id="d6"><img onclick="clickImg(this.alt);" src="img/i (6).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="6" /></div>	
-				<div class="imgbox" id="d7"><img onclick="clickImg(this.alt);" src="img/i (7).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="7" /></div>	
-				<div class="imgbox" id="d8"><img onclick="clickImg(this.alt);" src="img/i (8).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="8" /></div>	
-				<div class="imgbox" id="d9"><img onclick="clickImg(this.alt);" src="img/i (9).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="9" /></div>	
-				<div class="imgbox" id="d10"><img onclick="clickImg(this.alt);" src="img/i (10).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="10" /></div>	
-				<div class="imgbox" id="d11"><img onclick="clickImg(this.alt);" src="img/i (11).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="11" /></div>	
-				<div class="imgbox" id="d12"><img onclick="clickImg(this.alt);" src="img/i (12).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="12" /></div>	
-				<div class="imgbox" id="d13"><img onclick="clickImg(this.alt);" src="img/i (13).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="13" /></div>	
-				<div class="imgbox" id="d14"><img onclick="clickImg(this.alt);" src="img/i (14).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="14" /></div>
-				<div class="imgbox" id="d15"><img onclick="clickImg(this.alt);" src="img/i (15).JPG" onerror="this.src='img/i (0).jpg'" width="279px" height="157px" alt="15" /></div>
-			</div>
+	<body onload="load()">
+		<div id="thumbs">
 		</div>
 	</body>
 </html>
