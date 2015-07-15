@@ -12,14 +12,37 @@
 			
 			var com_x, com_y;//电脑的精度和纬度
 			var com;
-			navigator.geolocation.getCurrentPosition(showPosition);
+			if (!navigator.geolocation)
+			{
+				alert("Geolocation is not supported by this browser.");
+			}
+			navigator.geolocation.getCurrentPosition(showPosition, showError);
 			function showPosition(pos)
 			{
 				com = pos;
 				com_x = pos.coords.latitude;
 				com_y = pos.doords.longitude;
+				alert(com_x + "+" + com_y);
 			}
-			alert(com_x + "+" + com_y);
+			function showError(error)
+			{
+				 switch(error.code)
+				{ 
+					case error.PERMISSION_DENIED: 
+						alert("用户阻止获取地理位置信息"); 
+						break; 
+					case error.POSITION_UNAVAILABLE: 
+						alert("地理位置信息尚未就绪"); 
+						break; 
+					case error.TIMEOUT: 
+						alert("地理位置信息获取超时"); 
+						break; 
+					case error.UNKNOWN_ERROR: 
+						alert("地理位置信息获取时发生未知错误"); 
+					break; 
+				} 
+			}
+			
 			//初始加载图片
 			function load()
 			{
