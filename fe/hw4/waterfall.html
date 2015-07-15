@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,22 +11,20 @@
 			var img_number = 0;
 			var getmore = true;
 			
-			var com_x, com_y;//电脑的精度和纬度
-			var com;
-			if (!navigator.geolocation)
-			{
-				alert("Geolocation is not supported by this browser.");
-			}
+			//地理位置
+			var com_x = 0, com_y = 0;//电脑的经度和纬度
+			var pos_x = new Array();//图片的经度和纬度
+			var pos_y = new Array();
 			navigator.geolocation.getCurrentPosition(showPosition, showError);
 			function showPosition(pos)
 			{
-				com = pos;
-				com_x = pos.coords.latitude;
-				com_y = pos.doords.longitude;
-				alert(com_x + "+" + com_y);
+				com_y = pos.coords.latitude;
+				com_x = pos.coords.longitude;
+				$("#position").append("本电脑的经度：" + com_x + "，纬度：" + com_y);
 			}
 			function showError(error)
 			{
+				$("#position").append("(经纬度获取失败)本电脑的经度：0，纬度：0");
 				 switch(error.code)
 				{ 
 					case error.PERMISSION_DENIED: 
@@ -43,6 +42,20 @@
 				} 
 			}
 			
+			//计算距离,经度x，纬度y
+			function getDis(x1, y1, x2, y2)
+			{
+				var a1 = Math.cos(x1) * Math.cos(y1);
+				var a2 = Math.cos(x2) * Math.cos(y2);
+				var b1 = Math.sin(x1) * Math.cos(y1);
+				var b2 = Math.sin(x2) * Math.cos(y2);
+				var c1 = Math.sin(y1);
+				var c2 = Math.sin(y2);
+				var a = Math.acos(a1*a2 + b1*b2 + c1*c2);
+				var d = a / 180 * Math.PI * 6371;
+				return d;
+			}
+			
 			//初始加载图片
 			function load()
 			{
@@ -51,9 +64,16 @@
 					$.each(result, function(i, item)
 					{
 						$("#thumbs").append("<div class='imgbox' id='" + item.url + "'><img onclick='clickImg(this.src);' src='" + item.url + "' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' /></div>");
+						var temp;
+						temp = Math.floor(Math.random() * ( 360 + 1)) - 180;//东西经度正负不同
+						if(temp === 0)
+							temp++;
+						pos_x[item.url.split('(')[1].split(')')[0]] = temp;
+						temp = Math.floor(Math.random() * ( 180 + 1)) - 90;//南北纬度正负不同
+						pos_y[item.url.split('(')[1].split(')')[0]] = temp;
 					});
 				});
-				
+
 				/*for(var i = 0; i < 15; i++)
 				{
 					altOfImgOnline++;
@@ -63,12 +83,13 @@
 			//点击图片
 			function clickImg(url)
 			{
-				if(url.split('(')[1].split(')')[0] === "0")
+				index = url.split('(')[1].split(')')[0];
+				if(index === "0")
 					return;
 					
 				getmore = false;//不会加载新图片
 				var width = 1000;
-				var height = document.body.clientHeight;
+				var height = document.documentElement.clientHeight;
 				var w = document.documentElement.clientWidth;
 
 				var comments = new Array();//评论
@@ -82,11 +103,11 @@
 				
 				//图片
 				var imgD = document.createElement("div");
-				imgD.style.cssText = "height:" + height*3/4 + "px; background-color:black; text-align:center;";
+				imgD.style.cssText = "height:" + height*7/10 + "px; background-color:black; text-align:center;";
 				imgD.id = "imgD";
 				win.appendChild(imgD);
 			
-				$("#imgD").append("<img src='" + url + "' onerror='this.src=\"img/i (0).jpg\"' height='"+ height*3/4 +"'  alt='"+url+"'/>");
+				$("#imgD").append("<img src='" + url + "' onerror='this.src=\"img/i (0).jpg\"' height='"+ height*7/10 +"'  alt='"+url+"'/>");
 				
 								
 				//内容
@@ -102,8 +123,15 @@
 				});				
 				
 				var winCon = document.createElement("div");
-				winCon.style.cssText = "background-color:black;color:white;text-align:center;width:" + width + "px;height:" + (height*1/4 - 25) + "px;overflow:auto;"; 
+				winCon.style.cssText = "background-color:black;color:white;text-align:center;width:" + width + "px;height:" + (height*3/10 - 45) + "px;overflow:auto;"; 
 				win.appendChild(winCon);
+				
+				//显示距离
+				var dis = document.createElement("div");
+				dis.innerHTML = "<该图片距离您" + (getDis(com_x, com_y, pos_x[index], pos_y[index])+'').split('.')[0] + "千米>";
+				dis.style.cssText = "background-color:black;color:white;text-align:center;";
+				win.appendChild(dis);
+				
 				
 				//按钮
 				var butCon = document.createElement("div");
@@ -125,6 +153,8 @@
 				var but = document.createElement("button");
 				but.innerHTML = '关闭'; 
 				butCon.appendChild(but); 
+				
+				
 				
 				//查看评论的点击事件
 				conbut.onclick = function()
@@ -179,7 +209,7 @@
 			{ 
 				if(getmore === false)
 					return;
-				if (document.body.scrollTop + document.body.clientHeight === document.body.scrollHeight) 
+				if (document.body.scrollTop + document.documentElement.clientHeight === document.body.scrollHeight) 
 				{
 					img_number++;
 					$.getJSON("json/img_"+ img_number +".json",function(result)
@@ -187,9 +217,16 @@
 						$.each(result, function(i, item)
 						{
 							$("#thumbs").append("<div class='imgbox' id='" + item.url + "'><img onclick='clickImg(this.src);' src='" + item.url + "' onerror='this.src=\"img/i (0).jpg\"' width='279px' height='157px' /></div>");
+							var temp;
+							temp = Math.floor(Math.random() * ( 360 + 1)) - 180;//东西经度正负不同
+							if(temp === 0)
+								temp++;
+							pos_x[item.url.split('(')[1].split(')')[0]] = temp;
+							temp = Math.floor(Math.random() * ( 180 + 1)) - 90;//南北纬度正负不同
+							pos_y[item.url.split('(')[1].split(')')[0]] = temp;
 						});
 					});
-				
+					
 					/*for(var i = 0; i < 6; i++)
 					{
 						
@@ -230,6 +267,8 @@
 	</head>
 	
 	<body onload="load()">
+		<div id="position" align="right">.
+		</div>
 		<div id="thumbs">
 		</div>
 	</body>
