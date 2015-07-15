@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Geolocation ¶ÔÏó£¬Geolocation Óë Google Map ½»»¥ ------ JS
+        <title>Geolocation å¯¹è±¡ï¼ŒGeolocation ä¸ Google Map äº¤äº’ ------ JS
             Mix</title>
     </head>
     <body>
-        <input type="button" id="getPos" value="»ñÈ¡ÎÒµÄÎ»ÖÃ">
+        <input type="button" id="getPos" value="è·å–æˆ‘çš„ä½ç½®">
         <div id="info" class="">
-            ÄúËùÔÚµÄÎ»ÖÃ£º ¾­¶È
-            <span class="tip">unknown</span>£¬Î³¶È
+            æ‚¨æ‰€åœ¨çš„ä½ç½®ï¼š ç»åº¦
+            <span class="tip">unknown</span>ï¼Œçº¬åº¦
             <span class="tip">unknown</span>
         </div>
 
@@ -22,11 +22,11 @@
 
             dom.btn.onclick = function(){
                 if (navigator.geolocation) {
-                    dom.info.innerHTML = "ÇëµÈ´ı²éÑ¯½á¹û·µ»Ø";
+                    dom.info.innerHTML = "è¯·ç­‰å¾…æŸ¥è¯¢ç»“æœè¿”å›";
                     dom.info.className = "warn";
                     navigator.geolocation.getCurrentPosition(getPositionSuccess,getPositionError,{timeout:5000});
                 }else {
-                     dom.info.innerHTML = "±§Ç¸£¬ÄúËùÊ¹ÓÃµÄä¯ÀÀÆ÷²»Ö§³Ö Geolocation ½Ó¿Ú";
+                     dom.info.innerHTML = "æŠ±æ­‰ï¼Œæ‚¨æ‰€ä½¿ç”¨çš„æµè§ˆå™¨ä¸æ”¯æŒ Geolocation æ¥å£";
                      dom.info.className = "warn";
                 }
             }
@@ -35,11 +35,11 @@
             function getPositionSuccess(position){
                 var lat = position.coords.latitude;
                 var lng = position.coords.longitude;
-                dom.info.innerHTML = "ÄúËùÔÚµÄÎ»ÖÃ£º ¾­¶È" + lat + "£¬Î³¶È" + lng;
+                dom.info.innerHTML = "æ‚¨æ‰€åœ¨çš„ä½ç½®ï¼š ç»åº¦" + lat + "ï¼Œçº¬åº¦" + lng;
                 
                 
                 if(typeof position.address === "undefined"){
-                    dom.info.innerHTML += "<br /><span class='tip'>ÄúµÄä¯ÀÀÆ÷Ä¿Ç°½öÌá¹©×ø±ê²éÑ¯£¬Ê¹ÓÃ Firefox 3.5+ ¿É»ñµÃ¸ü¶àĞÅÏ¢</span>";
+                    dom.info.innerHTML += "<br /><span class='tip'>æ‚¨çš„æµè§ˆå™¨ç›®å‰ä»…æä¾›åæ ‡æŸ¥è¯¢ï¼Œä½¿ç”¨ Firefox 3.5+ å¯è·å¾—æ›´å¤šä¿¡æ¯</span>";
                 }else{
                     dom.info.innerHTML += "<br /><span class='tip'>" + position.address.country + " , " + position.address.region + " , " + position.address.city+"</span>";
                 }
@@ -50,13 +50,13 @@
             function getPositionError(error){
                 switch(error.code){
                     case error.TIMEOUT :
-                        dom.info.innerHTML = "Á¬½Ó³¬Ê±£¬ÇëÖØÊÔ";
+                        dom.info.innerHTML = "è¿æ¥è¶…æ—¶ï¼Œè¯·é‡è¯•";
                         break;
                     case error.PERMISSION_DENIED :
-                        dom.info.innerHTML = "Äú¾Ü¾øÁËÊ¹ÓÃÎ»ÖÃ¹²Ïí·şÎñ£¬²éÑ¯ÒÑÈ¡Ïû";
+                        dom.info.innerHTML = "æ‚¨æ‹’ç»äº†ä½¿ç”¨ä½ç½®å…±äº«æœåŠ¡ï¼ŒæŸ¥è¯¢å·²å–æ¶ˆ";
                         break;
                     case error.POSITION_UNAVAILABLE : 
-                        dom.info.innerHTML = "Ç×°®µÄ»ğĞÇÍøÓÑ£¬·Ç³£±§Ç¸<br />ÎÒÃÇÔİÊ±ÎŞ·¨ÎªÄúËùÔÚµÄĞÇÇòÌá¹©Î»ÖÃ·şÎñ";
+                        dom.info.innerHTML = "äº²çˆ±çš„ç«æ˜Ÿç½‘å‹ï¼Œéå¸¸æŠ±æ­‰<br />æˆ‘ä»¬æš‚æ—¶æ— æ³•ä¸ºæ‚¨æ‰€åœ¨çš„æ˜Ÿçƒæä¾›ä½ç½®æœåŠ¡";
                         break;
                 }
             }
