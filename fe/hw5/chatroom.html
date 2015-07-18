@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script src="https://cdn.firebase.com/js/client/2.2.7/firebase.js"></script>
+		<script src="jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+		
+			var chatRef = new Firebase("https://brilliant-fire-3767.firebaseio.com/chat");
+			var username;//当前用户的用户名
+			var userrosd;//当前用户的路径
+			var flag = true;//true代表可以使用该用户名，false代表不可以
+				
+			//得到已有的用户名列表
+			var list = new Array();
+			chatRef.child("users").on("value", function(snapshot) {
+				list = [];
+				snapshot.forEach(function(ss) {
+					list.push(ss.val().name);
+				});
+			});
+			
+			
+			//点击登陆按钮
+			function loginbutclick(){
+				username = $("#inputname").val();//用户输入的用户名
+				
+				
+				//判断是否有输入
+				if(username === ""){
+					alert("Username is empty, please add your name!");
+					return;
+				}
+				
+				//判断输入的用户名是否无重复
+				for(var i = 0; i < list.length; i++)
+					if(username === list[i])
+						flag = false;
+				
+				if(flag === false) {
+				//如果已有相同用户名
+					alert("This username has been used, please change to another one!");
+					$("#inputname").val("");
+					flag = true;
+				}
+				else {
+				//如果用户名可以使用
+					userpath = (chatRef.child("users").push({name: username	})).toString();
+					alert("Welcome, \""+ $("#inputname").val() + "\".");
+					$("#logindiv").remove();
+					
+					$("#win").append("<div id='chatrecord'>CHAT</div>");
+					$("#win").append("<div id='namelist'>NAMELIST</div>");
+					$("#win").append("<div id='chatrecorddiv'></div>");
+					$("#win").append("<div id='namelistdiv'></div>");
+					$("#win").append("<div id='messagediv'></div>");
+					$("#win").append("<div id='messagebutdiv'></div>");
+					
+					
+					$("#chatrecorddiv").append("<ul id=chatrecordul></ul>");
+					$("#namelistdiv").append("<ul id=namelistul></ul>");
+					$("#messagediv").append("<textarea id='message' placeholder='Say something...' />");
+					$("#messagebutdiv").append("<button id='messagebut' onclick='messagebutclick()'>SEND</button>");
+					
+					
+					
+					//显示聊天内容
+					chatRef.child("messages").limitToLast(20).on("child_added", function(snapshot) {
+						if(snapshot.val().name === username) {
+							$("#chatrecordul").append("<li class='userownmessage'>"+snapshot.val().name+": "+snapshot.val().message+"</li>");
+						}
+						else
+							$("#chatrecordul").append("<li>"+snapshot.val().name+": "+snapshot.val().message+"</li>");
+					});
+					
+					//显示用户名单
+					chatRef.child("users").on("child_added", function(snapshot) {
+						if(snapshot.val().name === username) {
+							$("#namelistul").append("<li class='userself' id='"+ username +"'>"+username+"</li>");
+						}
+						else
+							$("#namelistul").append("<li id='"+ snapshot.val().name +"'>"+snapshot.val().name+"</li>");
+					});
+					//删除离开用户
+					chatRef.child("users").on("child_removed", function(snapshot) {
+						$("#"+snapshot.val().name).remove();
+					});
+					
+				}
+			}
+			
+			//发送消息
+			function messagebutclick() {
+				chatRef.child("messages").push({
+					message: $("#message").val(),
+					name: username
+				});
+				$("#message").val("");
+			}
+			
+			window.onunload = function() {
+				var leave = new Firebase(userpath);
+				leave.remove();
+			}
+		</script>
+		<style type="text/css">
+			#logindiv{
+				background-color: #0a0a0a;
+			}
+			
+			#logodiv{
+				text-align: center;
+			}
+			#logo{
+				width:600px;
+			}
+			
+			
+			#inputdiv{
+				text-align: center;
+				height: 70px;
+				margin: 10px;
+			}
+			#inputname{
+				font-size: 20px;
+			}
+			
+			#loginbutdiv{
+				text-align: center;
+				height: 70px;
+			}
+			#loginbut{
+				font-size: 25px;
+				font-weight: bold;
+			}
+			#loginbut:hover{
+				color: red;
+			}
+			
+		
+			#chatrecord {
+				background-color: black;
+				color: white;
+				position: absolute;
+				top: 10px;
+				left: 270px;
+				width: 600px;
+				height: 20px;
+				text-align: center;
+			}
+			#chatrecorddiv{
+				background-color: black;
+				color: white;
+				position: absolute;
+				top: 30px;
+				left: 270px;
+				width: 600px;
+				height: 450px;
+			}
+			#namelist {
+				background-color: black;
+				color: white;
+				position: absolute;
+				top:10px;
+				left:880px;
+				width: 200px;
+				height: 20px;
+				text-align: center;
+			}
+			#namelistdiv {
+				background-color: black;
+				color: white;
+				position: absolute;
+				top:30px;
+				left:880px;
+				width: 200px;
+				height: 450px;
+			}
+			
+			
+			#messagediv{
+				background-color: black;
+				position: absolute;
+				top: 490px;
+				left: 270px;
+				width: 600px;
+				height: 100px;
+			}
+			#message{
+				width: 596px;
+				height: 95px;
+				background: black;
+				color: white;
+				font-size: 30px;
+			}
+			#messagebutdiv{
+				background-color: black;
+				position: absolute;
+				top: 490px;
+				left: 880px;
+				width: 200px;
+				height: 100px;
+			}
+			#messagebut{
+				width: 200px;
+				height: 100px;
+				background: black;
+				color: white;
+				font-size: 30px;
+			}
+			#messagebut:hover{
+				background: black;
+				color: red;
+			}
+			
+			.userself, .userownmessage {
+				color: red;
+			}
+		
+		</style>
+	</head>
+	<body>
+		<div id="win">
+			<div id="logindiv">
+				<div id="logodiv">
+					<img id="logo" src="img/logo.jpg"/>
+				</div>
+				<div id="inputdiv" >
+					<input type="text" id="inputname" placeholder="USERNAME" />
+				</div>
+				<div id="loginbutdiv">
+					<button id="loginbut" onclick="loginbutclick()">LOGIN</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
