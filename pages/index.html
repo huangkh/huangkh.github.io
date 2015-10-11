@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+	<title>Game of Life</title>
+    </head>
+    <body>
+	<canvas id = "canvas"></canvas>
+		<p>
+		<button id = "update">UPDATE</button>
+		<button id = "play">AUTO PLAY</button>
+		<button id = "pause">PAUSE</button>
+		<button id = "restart">RESTART</button>
+		</p>
+		
+		<p>numbers of col: <input type = "number" id = "num_col"></input><p>
+		<p>numbers of row: <input type = "number" id = "num_row"></input><p>
+		<button id = "set_size">Change the size</button>
+		<button id = "get_size">Show the size</button>
+		
+		<p>fps: <input type = "number" id = "fps"></input><p>
+		<p>the times for updating the map per second</p>
+		<button id = "set_fps">Change the fps</button>
+		<button id = "get_fps">Show the fps</button>
+		
+		<p>cell density: <input type = "number" id = "cell_density"></input><p>
+		<p>numbers of the lived cells in the map</p>
+		<button id = "set_density">Change the cell density</button>
+		<button id = "get_density">Show the cell density</button>
+		
+	<script src = "js/jquery-1.11.3.min.js"></script>
+	<script src = "js/script.js" canvas = "canvas" charset = "utf-8"></script>
+    </body>
+</html>
